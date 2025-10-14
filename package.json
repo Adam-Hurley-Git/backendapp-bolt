@@ -9,7 +9,7 @@
     "lint": "next lint",
     "db:migrate": "supabase db push",
     "db:reset": "supabase db reset",
-    "build:worker": "npx @opennextjs/cloudflare",
+    "build:worker": "npx opennextjs-cloudflare build",
     "dev:worker": "wrangler dev --port 8771",
     "preview:worker": "npm run build && npm run build:worker && npm run dev:worker",
     "deploy": "npm run build && npm run build:worker && wrangler deploy",
