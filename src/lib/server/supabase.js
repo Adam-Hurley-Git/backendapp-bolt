@@ -1,22 +1,42 @@
 import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import { env as publicEnv } from '$env/dynamic/public';
+import { env as privateEnv } from '$env/dynamic/private';
 
-if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
-	throw new Error('Missing Supabase environment variables');
+// Lazy initialization of Supabase admin client
+let _supabaseAdmin = null;
+
+function getSupabaseAdmin() {
+	if (_supabaseAdmin) return _supabaseAdmin;
+
+	const PUBLIC_SUPABASE_URL = publicEnv.PUBLIC_SUPABASE_URL;
+	const PUBLIC_SUPABASE_ANON_KEY = publicEnv.PUBLIC_SUPABASE_ANON_KEY;
+	const SUPABASE_SERVICE_ROLE_KEY = privateEnv.SUPABASE_SERVICE_ROLE_KEY;
+
+	if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
+		throw new Error('Missing Supabase environment variables. Please set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY in Cloudflare Pages dashboard.');
+	}
+
+	// Server-side Supabase client with service role key (for admin operations)
+	_supabaseAdmin = createClient(
+		PUBLIC_SUPABASE_URL,
+		SUPABASE_SERVICE_ROLE_KEY || PUBLIC_SUPABASE_ANON_KEY,
+		{
+			auth: {
+				autoRefreshToken: false,
+				persistSession: false
+			}
+		}
+	);
+
+	return _supabaseAdmin;
 }
 
-// Server-side Supabase client with service role key (for admin operations)
-export const supabaseAdmin = createClient(
-	PUBLIC_SUPABASE_URL,
-	SUPABASE_SERVICE_ROLE_KEY || PUBLIC_SUPABASE_ANON_KEY,
-	{
-		auth: {
-			autoRefreshToken: false,
-			persistSession: false
-		}
+// Export for compatibility
+export const supabaseAdmin = new Proxy({}, {
+	get(target, prop) {
+		return getSupabaseAdmin()[prop];
 	}
-);
+});
 
 // Database helpers
 export const db = {

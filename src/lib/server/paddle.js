@@ -18,46 +18,55 @@
  * ⚠️ Paddle credentials are OPTIONAL - the app will work without them
  */
 
-import {
-	PADDLE_VENDOR_ID,
-	PADDLE_VENDOR_AUTH_CODE,
-	PADDLE_PUBLIC_KEY,
-	PADDLE_WEBHOOK_SECRET
-} from '$env/static/private';
-import { PUBLIC_PADDLE_ENVIRONMENT } from '$env/static/public';
-
-// Check if Paddle is configured
-const isPaddleConfigured = !!(
-	PADDLE_VENDOR_ID &&
-	PADDLE_VENDOR_AUTH_CODE &&
-	PADDLE_VENDOR_ID !== 'your_paddle_vendor_id' &&
-	PADDLE_VENDOR_AUTH_CODE !== 'your_paddle_vendor_auth_code'
-);
-
-// Classic Paddle API URLs (deprecated but still functional)
-const PADDLE_API_URL =
-	PUBLIC_PADDLE_ENVIRONMENT === 'production'
-		? 'https://api.paddle.com'
-		: 'https://sandbox-api.paddle.com';
-
-const PADDLE_CHECKOUT_URL =
-	PUBLIC_PADDLE_ENVIRONMENT === 'production'
-		? 'https://checkout.paddle.com'
-		: 'https://sandbox-checkout.paddle.com';
+import { env as privateEnv } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 class PaddleService {
 	constructor() {
+		// Lazy load env vars at runtime
+		this._envLoaded = false;
+	}
+
+	_loadEnv() {
+		if (this._envLoaded) return;
+
+		const PADDLE_VENDOR_ID = privateEnv.PADDLE_VENDOR_ID;
+		const PADDLE_VENDOR_AUTH_CODE = privateEnv.PADDLE_VENDOR_AUTH_CODE;
+		const PADDLE_PUBLIC_KEY = privateEnv.PADDLE_PUBLIC_KEY;
+		const PADDLE_WEBHOOK_SECRET = privateEnv.PADDLE_WEBHOOK_SECRET;
+		const PUBLIC_PADDLE_ENVIRONMENT = publicEnv.PUBLIC_PADDLE_ENVIRONMENT;
+
 		this.vendorId = PADDLE_VENDOR_ID || 'not_configured';
 		this.vendorAuthCode = PADDLE_VENDOR_AUTH_CODE || 'not_configured';
 		this.publicKey = PADDLE_PUBLIC_KEY || 'not_configured';
 		this.webhookSecret = PADDLE_WEBHOOK_SECRET || 'not_configured';
-		this.isConfigured = isPaddleConfigured;
+		this.environment = PUBLIC_PADDLE_ENVIRONMENT || 'sandbox';
+
+		// Check if Paddle is configured
+		this.isConfigured = !!(
+			PADDLE_VENDOR_ID &&
+			PADDLE_VENDOR_AUTH_CODE &&
+			PADDLE_VENDOR_ID !== 'your_paddle_vendor_id' &&
+			PADDLE_VENDOR_AUTH_CODE !== 'your_paddle_vendor_auth_code'
+		);
+
+		// Set API URLs
+		this.apiUrl = this.environment === 'production'
+			? 'https://api.paddle.com'
+			: 'https://sandbox-api.paddle.com';
+
+		this.checkoutUrl = this.environment === 'production'
+			? 'https://checkout.paddle.com'
+			: 'https://sandbox-checkout.paddle.com';
+
+		this._envLoaded = true;
 	}
 
 	/**
 	 * Check if Paddle is properly configured
 	 */
 	checkConfiguration() {
+		this._loadEnv();
 		if (!this.isConfigured) {
 			throw new Error(
 				'Paddle is not configured. Please add PADDLE_VENDOR_ID and PADDLE_VENDOR_AUTH_CODE to your environment variables.'
@@ -72,7 +81,7 @@ class PaddleService {
 		this.checkConfiguration();
 
 		try {
-			const response = await fetch(`${PADDLE_API_URL}${endpoint}`, {
+			const response = await fetch(`${this.apiUrl}${endpoint}`, {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${this.vendorAuthCode}`,
@@ -273,6 +282,7 @@ class PaddleService {
 
 	// Generate checkout URL for frontend
 	generateCheckoutUrl(planId, userEmail, metadata = {}) {
+		this._loadEnv();
 		const params = new URLSearchParams({
 			vendor: this.vendorId,
 			product: planId,
@@ -280,12 +290,13 @@ class PaddleService {
 			passthrough: JSON.stringify(metadata)
 		});
 
-		return `${PADDLE_CHECKOUT_URL}/checkout.html?${params.toString()}`;
+		return `${this.checkoutUrl}/checkout.html?${params.toString()}`;
 	}
 
 	// Generate subscription management URL
 	generateManagementUrl(subscriptionId) {
-		return `${PADDLE_CHECKOUT_URL}/subscription/${subscriptionId}/manage`;
+		this._loadEnv();
+		return `${this.checkoutUrl}/subscription/${subscriptionId}/manage`;
 	}
 }
 

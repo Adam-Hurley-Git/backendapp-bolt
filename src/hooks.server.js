@@ -1,8 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
-import {
-	PUBLIC_SUPABASE_URL,
-	PUBLIC_SUPABASE_ANON_KEY
-} from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { sequence } from '@sveltejs/kit/hooks';
 
 /**
@@ -10,6 +7,16 @@ import { sequence } from '@sveltejs/kit/hooks';
  * Creates a Supabase client for each request and handles session management
  */
 async function supabaseAuth({ event, resolve }) {
+	// Get env vars from Cloudflare Pages (available at runtime, not build time)
+	const PUBLIC_SUPABASE_URL = env.PUBLIC_SUPABASE_URL;
+	const PUBLIC_SUPABASE_ANON_KEY = env.PUBLIC_SUPABASE_ANON_KEY;
+
+	// Skip if env vars not available
+	if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
+		console.warn('Supabase environment variables not configured');
+		return resolve(event);
+	}
+
 	// Create a Supabase client specific to this request
 	event.locals.supabase = createServerClient(
 		PUBLIC_SUPABASE_URL,
