@@ -4,6 +4,14 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			// Initialize environment variables for Bolt compatibility
+			window.env = window.env || {};
+			window.env.PUBLIC_SUPABASE_URL = 'https://mopgxvxiiuxhwmhwvkmb.supabase.co';
+			window.env.PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vcGd4dnhpaXV4aHdtaHd2a21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjIxNTAsImV4cCI6MjA3NjE5ODE1MH0.j2he26S2IHeBBaWVS-CiR1c__cR6sJcMuT9IYZfPfAM';
+			window.env.VITE_SUPABASE_URL = window.env.PUBLIC_SUPABASE_URL;
+			window.env.VITE_SUPABASE_ANON_KEY = window.env.PUBLIC_SUPABASE_ANON_KEY;
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

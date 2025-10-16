@@ -1,14 +1,21 @@
 import { createBrowserClient } from '@supabase/ssr'
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
 import { browser } from '$app/environment'
 
-if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
-  throw new Error('Missing Supabase environment variables')
-}
+// Get environment variables with fallbacks
+const getEnvVar = (key) => {
+  if (browser && typeof window !== 'undefined') {
+    // In browser, try window.env or import.meta.env
+    return window?.env?.[key] || import.meta.env?.[key] || '';
+  }
+  return '';
+};
+
+const PUBLIC_SUPABASE_URL = getEnvVar('PUBLIC_SUPABASE_URL') || getEnvVar('VITE_SUPABASE_URL');
+const PUBLIC_SUPABASE_ANON_KEY = getEnvVar('PUBLIC_SUPABASE_ANON_KEY') || getEnvVar('VITE_SUPABASE_ANON_KEY');
 
 // Client-side Supabase client using SSR-compatible browser client
 // This ensures cookies are used for session storage, which syncs with the server
-export const supabase = browser
+export const supabase = browser && PUBLIC_SUPABASE_URL && PUBLIC_SUPABASE_ANON_KEY
   ? createBrowserClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
   : null
 

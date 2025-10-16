@@ -159,7 +159,7 @@
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-display font-bold text-slate-900 mb-2">
-          Welcome back{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}!
+          Welcome back{profile?.name ? `, ${profile.name.split(' ')[0]}` : ''}!
         </h1>
         <p class="text-lg text-slate-600">
           Manage your CalendarExtension - ColorKit subscription and view your usage statistics

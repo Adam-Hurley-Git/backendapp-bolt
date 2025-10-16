@@ -7,13 +7,23 @@ import { sequence } from '@sveltejs/kit/hooks';
  * Creates a Supabase client for each request and handles session management
  */
 async function supabaseAuth({ event, resolve }) {
-	// Get env vars from Cloudflare Pages (available at runtime, not build time)
-	const PUBLIC_SUPABASE_URL = env.PUBLIC_SUPABASE_URL;
-	const PUBLIC_SUPABASE_ANON_KEY = env.PUBLIC_SUPABASE_ANON_KEY;
+	// Get env vars - try multiple sources for Bolt compatibility
+	const PUBLIC_SUPABASE_URL =
+		env.PUBLIC_SUPABASE_URL ||
+		process.env.PUBLIC_SUPABASE_URL ||
+		process.env.VITE_SUPABASE_URL ||
+		'https://mopgxvxiiuxhwmhwvkmb.supabase.co';
+
+	const PUBLIC_SUPABASE_ANON_KEY =
+		env.PUBLIC_SUPABASE_ANON_KEY ||
+		process.env.PUBLIC_SUPABASE_ANON_KEY ||
+		process.env.VITE_SUPABASE_ANON_KEY ||
+		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vcGd4dnhpaXV4aHdtaHd2a21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjIxNTAsImV4cCI6MjA3NjE5ODE1MH0.j2he26S2IHeBBaWVS-CiR1c__cR6sJcMuT9IYZfPfAM';
 
 	// Skip if env vars not available
 	if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
 		console.warn('Supabase environment variables not configured');
+		event.locals.getSession = async () => null;
 		return resolve(event);
 	}
 
