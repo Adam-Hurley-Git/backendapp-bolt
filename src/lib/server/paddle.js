@@ -14,6 +14,8 @@
  * - Better error handling and modern API design
  *
  * This code is Workers-compatible (uses fetch and Web Crypto API).
+ *
+ * ⚠️ Paddle credentials are OPTIONAL - the app will work without them
  */
 
 import {
@@ -23,6 +25,14 @@ import {
 	PADDLE_WEBHOOK_SECRET
 } from '$env/static/private';
 import { PUBLIC_PADDLE_ENVIRONMENT } from '$env/static/public';
+
+// Check if Paddle is configured
+const isPaddleConfigured = !!(
+	PADDLE_VENDOR_ID &&
+	PADDLE_VENDOR_AUTH_CODE &&
+	PADDLE_VENDOR_ID !== 'your_paddle_vendor_id' &&
+	PADDLE_VENDOR_AUTH_CODE !== 'your_paddle_vendor_auth_code'
+);
 
 // Classic Paddle API URLs (deprecated but still functional)
 const PADDLE_API_URL =
@@ -37,16 +47,30 @@ const PADDLE_CHECKOUT_URL =
 
 class PaddleService {
 	constructor() {
-		this.vendorId = PADDLE_VENDOR_ID;
-		this.vendorAuthCode = PADDLE_VENDOR_AUTH_CODE;
-		this.publicKey = PADDLE_PUBLIC_KEY;
-		this.webhookSecret = PADDLE_WEBHOOK_SECRET;
+		this.vendorId = PADDLE_VENDOR_ID || 'not_configured';
+		this.vendorAuthCode = PADDLE_VENDOR_AUTH_CODE || 'not_configured';
+		this.publicKey = PADDLE_PUBLIC_KEY || 'not_configured';
+		this.webhookSecret = PADDLE_WEBHOOK_SECRET || 'not_configured';
+		this.isConfigured = isPaddleConfigured;
+	}
+
+	/**
+	 * Check if Paddle is properly configured
+	 */
+	checkConfiguration() {
+		if (!this.isConfigured) {
+			throw new Error(
+				'Paddle is not configured. Please add PADDLE_VENDOR_ID and PADDLE_VENDOR_AUTH_CODE to your environment variables.'
+			);
+		}
 	}
 
 	/**
 	 * Helper function to make Paddle API requests using fetch
 	 */
 	async paddleFetch(endpoint, options = {}) {
+		this.checkConfiguration();
+
 		try {
 			const response = await fetch(`${PADDLE_API_URL}${endpoint}`, {
 				method: 'POST',
@@ -73,6 +97,8 @@ class PaddleService {
 
 	// Create a checkout session
 	async createCheckout(checkoutData) {
+		this.checkConfiguration();
+
 		try {
 			const data = await this.paddleFetch('/checkout/session', {
 				body: {
