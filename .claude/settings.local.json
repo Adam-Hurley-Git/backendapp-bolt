@@ -24,7 +24,18 @@
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:kit.svelte.dev)",
+      "WebFetch(domain:svelte.dev)",
+      "Bash(copy:*)",
+      "Bash(timeout:*)",
+      "Bash(del next.config.js)",
+      "Bash(del open-next.config.ts)",
+      "Bash(tree:*)",
+      "Bash(del postcss.config.js)",
+      "Bash(del \"C:\\Users\\hurle_1pxotab\\Documents\\2 backend projec - Copy\\postcss.config.js\")",
+      "Bash(rm \"C:\\Users\\hurle_1pxotab\\Documents\\2 backend projec - Copy\\postcss.config.js\")",
+      "Bash(if not exist \"src\\routes\\billing\" mkdir \"src\\routes\\billing\")"
     ],
     "deny": [],
     "ask": []

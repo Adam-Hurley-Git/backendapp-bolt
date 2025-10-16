@@ -1,23 +1,24 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "calendar-extension-backend2"
-compatibility_date = "2025-03-25"
-compatibility_flags = ["nodejs_compat"]
+name = "calendar-extension-backend"
+compatibility_date = "2025-01-01"
 
-# For Cloudflare Pages deployment
-pages_build_output_dir = ".open-next/assets"
+# Removed nodejs_compat - we now use Web APIs only (fetch, Web Crypto)
+# No Node.js-specific dependencies (axios, crypto) anymore
+
+# For Cloudflare Pages deployment with SvelteKit
+pages_build_output_dir = ".svelte-kit/cloudflare"
 
 # Environment variables should be added in Cloudflare Pages Dashboard
 # Settings > Environment Variables
 # Required variables:
-# - NEXT_PUBLIC_SUPABASE_URL
-# - NEXT_PUBLIC_SUPABASE_ANON_KEY
+# - PUBLIC_SUPABASE_URL
+# - PUBLIC_SUPABASE_ANON_KEY
 # - SUPABASE_SERVICE_ROLE_KEY
+# - PUBLIC_PADDLE_VENDOR_ID
+# - PUBLIC_PADDLE_ENVIRONMENT (sandbox or production)
 # - PADDLE_VENDOR_ID
 # - PADDLE_VENDOR_AUTH_CODE
 # - PADDLE_PUBLIC_KEY
 # - PADDLE_WEBHOOK_SECRET
-# - NEXTAUTH_URL (set after first deployment)
-# - NEXTAUTH_SECRET
 # - JWT_SECRET
 # - ADMIN_EMAIL
-# - NODE_ENV=production

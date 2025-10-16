@@ -8,7 +8,12 @@
 # testing
 /coverage
 
-# next.js
+# SvelteKit build outputs
+/.svelte-kit/
+/build
+/dist
+
+# next.js (legacy)
 /.next/
 /out/
 

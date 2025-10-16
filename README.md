@@ -1,306 +1,240 @@
-# Chrome Extension Backend
+# Calendar Extension Backend - SvelteKit
 
-A comprehensive backend solution for Chrome extensions with Supabase and Paddle integration, featuring user authentication, subscription management, and admin dashboard.
+Backend API for the Calendar Extension Chrome extension, built with SvelteKit and deployed on Cloudflare Pages.
 
 ## Features
 
-### User Features
-- 🔐 **Authentication**: Google OAuth & email/password via Supabase
-- 💳 **Payment Processing**: Secure payments through Paddle
-- 📊 **User Dashboard**: Subscription status, billing info, license keys
-- 🔑 **License Management**: Automatic license key generation
-- 📱 **Responsive Design**: Beautiful UI with Tailwind CSS
+- **Authentication**: User registration, login, and session management with Supabase Auth
+- **Subscription Management**: Integration with Paddle for payment processing
+- **License Key System**: Automatic license key generation and verification
+- **Webhook Handling**: Process Paddle webhook events for subscription updates
+- **Admin Dashboard**: User management and admin operations
+- **Database**: PostgreSQL via Supabase with RLS (Row Level Security)
 
-### Admin Features
-- 👥 **User Management**: View all users, subscriptions, and details
-- 📈 **Analytics**: Revenue tracking, user metrics, failed payments
-- 🛠️ **Paddle Integration**: Direct access to Paddle management
-- 📋 **Audit Trail**: Track all admin actions
-- 🔍 **Search & Filter**: Advanced user filtering and search
+## Tech Stack
 
-### Technical Features
-- 🔄 **Webhook Integration**: Real-time payment sync with Paddle
-- 🛡️ **Row Level Security**: Secure data access with Supabase RLS
-- 🔑 **License Key System**: Automatic generation and validation
-- 📧 **Email Integration**: Automated user communications
-- 🚀 **Next.js 14**: Modern React framework with App Router
-
-## Quick Start
-
-### Prerequisites
-- Node.js 18+
-- Supabase account
-- Paddle account
-- Google OAuth credentials
-
-### Installation
-
-1. **Clone and install dependencies**
-   ```bash
-   git clone <repository-url>
-   cd chrome-extension-backend
-   npm install
-   ```
-
-2. **Environment setup**
-   ```bash
-   cp .env.example .env
-   ```
-
-   Configure your `.env` file:
-   ```env
-   # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-
-   # Paddle
-   PADDLE_VENDOR_ID=your_paddle_vendor_id
-   PADDLE_VENDOR_AUTH_CODE=your_paddle_vendor_auth_code
-   PADDLE_PUBLIC_KEY=your_paddle_public_key
-   PADDLE_WEBHOOK_SECRET=your_paddle_webhook_secret
-
-   # Application
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your_nextauth_secret
-   JWT_SECRET=your_jwt_secret
-   ```
-
-3. **Database setup**
-   ```bash
-   # Run the schema in your Supabase SQL editor
-   # File: supabase/schema.sql
-   ```
-
-4. **Configure Paddle plans**
-
-   Update `lib/paddle.js` with your actual Paddle plan IDs:
-   ```javascript
-   export const PADDLE_PLANS = {
-     BASIC_MONTHLY: {
-       id: 'your_actual_plan_id',
-       // ... other config
-     }
-   }
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
+- **Framework**: SvelteKit 2.x
+- **Deployment**: Cloudflare Pages
+- **Database**: Supabase (PostgreSQL)
+- **Payments**: Paddle
+- **Styling**: Tailwind CSS
+- **Language**: JavaScript
 
 ## Project Structure
 
 ```
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes
-│   ├── admin/             # Admin dashboard
-│   ├── auth/              # Authentication pages
-│   ├── billing/           # Billing management
-│   ├── dashboard/         # User dashboard
-│   └── pricing/           # Pricing & signup
-├── components/            # Reusable React components
-├── lib/                   # Core utilities
-│   ├── auth.js           # Authentication helpers
-│   ├── paddle.js         # Paddle integration
-│   └── supabase.js       # Database helpers
-├── middleware.js          # Route protection
-├── supabase/             # Database schema
-└── utils/                # Utility functions
+src/
+├── app.d.ts                    # TypeScript declarations
+├── app.html                    # HTML template
+├── app.css                     # Global styles
+├── hooks.server.js             # Server hooks (auth, security)
+├── lib/
+│   ├── server/
+│   │   ├── auth.js            # Auth helpers & middleware
+│   │   ├── paddle.js          # Paddle payment service
+│   │   └── supabase.js        # Supabase client & DB helpers
+│   └── utils/
+│       └── licenseGenerator.js # License key generation
+└── routes/
+    ├── +layout.server.js      # Root layout with session
+    ├── +layout.svelte         # Root layout component
+    ├── +page.svelte           # Home page
+    └── api/
+        ├── auth/
+        │   ├── register/+server.js
+        │   ├── login/+server.js
+        │   ├── logout/+server.js
+        │   └── session/+server.js
+        ├── subscription/
+        │   ├── status/+server.js
+        │   ├── create/+server.js
+        │   ├── cancel/+server.js
+        │   └── update/+server.js
+        ├── license/
+        │   ├── verify/+server.js
+        │   └── info/+server.js
+        ├── webhooks/
+        │   └── paddle/+server.js
+        └── admin/
+            └── users/
+                ├── +server.js
+                └── [userId]/+server.js
 ```
 
 ## API Endpoints
 
-### User Endpoints
-- `GET /api/user/profile` - Get user profile
-- `PUT /api/user/profile` - Update user profile
-- `GET /api/user/subscription` - Get user subscription
-- `GET /api/user/payments` - Get payment history
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login with email/password
+- `POST /api/auth/logout` - Logout current user
+- `GET /api/auth/session` - Get current session
 
-### Payment Endpoints
-- `POST /api/payments/create-attempt` - Create payment attempt
-- `POST /api/paddle/manage-subscription` - Get management URL
+### Subscription Management
+- `GET /api/subscription/status` - Get user's subscription status
+- `POST /api/subscription/create` - Create Paddle checkout session
+- `POST /api/subscription/cancel` - Cancel user's subscription
+- `POST /api/subscription/update` - Update subscription plan
 
-### Admin Endpoints
-- `GET /api/admin/users` - Get all users (paginated)
-- `GET /api/admin/stats` - Get dashboard statistics
-- `POST /api/admin/paddle-management` - Admin Paddle access
+### License Verification
+- `POST /api/license/verify` - Verify license key (used by Chrome extension)
+- `GET /api/license/info` - Get license info for authenticated user
 
 ### Webhooks
-- `POST /api/webhooks/paddle` - Paddle webhook handler
+- `POST /api/webhooks/paddle` - Handle Paddle webhook events
 
-## Database Schema
+### Admin (requires admin email)
+- `GET /api/admin/users` - List all users
+- `GET /api/admin/users/[userId]` - Get user details
+- `PATCH /api/admin/users/[userId]` - Update user
 
-### Core Tables
-- **profiles**: User profile information
-- **subscriptions**: Subscription data with Paddle sync
-- **payment_attempts**: Track payment flows
-- **webhook_events**: Paddle webhook event log
-- **admin_actions**: Admin activity audit trail
+## Environment Variables
 
-### Key Features
-- Row Level Security (RLS) on all tables
-- Automatic user creation triggers
-- License key generation functions
-- Timestamp tracking with auto-updates
+Copy `.env.example` to `.env.local` and configure:
 
-## Paddle Integration
-
-### Supported Events
-- `subscription_created` - New subscription setup
-- `subscription_updated` - Plan changes, status updates
-- `subscription_cancelled` - Cancellation handling
-- `subscription_payment_succeeded` - Payment processing
-- `subscription_payment_failed` - Failed payment handling
-- `subscription_payment_refunded` - Refund processing
-
-### Webhook Configuration
-Set your Paddle webhook URL to:
-```
-https://yourdomain.com/api/webhooks/paddle
-```
-
-## Deployment to Cloudflare Pages
-
-This application is optimized for deployment on **Cloudflare Pages with Workers** using `@opennextjs/cloudflare`.
-
-### Prerequisites for Deployment
-- Cloudflare account
-- GitHub repository
-- Node.js 20.11.0 or later
-
-### Quick Deploy Steps
-
-#### 1. Push to GitHub
 ```bash
-git init
-git add .
-git commit -m "Initial commit: Next.js app ready for Cloudflare"
-git remote add origin https://github.com/yourusername/your-repo.git
-git push -u origin main
-```
+# Supabase Configuration
+PUBLIC_SUPABASE_URL=your_supabase_url
+PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-#### 2. Connect to Cloudflare Pages
-1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Navigate to **Workers & Pages** > **Create application** > **Pages**
-3. Connect your GitHub repository
-4. Configure build settings:
-   - **Framework preset**: Next.js
-   - **Build command**: `npm run build && npx @opennextjs/cloudflare`
-   - **Build output directory**: `.open-next/assets`
+# Paddle Configuration
+PADDLE_VENDOR_ID=your_paddle_vendor_id
+PADDLE_VENDOR_AUTH_CODE=your_paddle_vendor_auth_code
+PADDLE_PUBLIC_KEY=your_paddle_public_key
+PADDLE_WEBHOOK_SECRET=your_paddle_webhook_secret
 
-#### 3. Set Environment Variables
-In Cloudflare Dashboard > Settings > Environment Variables, add:
-```env
-NODE_ENV=production
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-PADDLE_VENDOR_ID=your_vendor_id
-PADDLE_VENDOR_AUTH_CODE=your_auth_code
-PADDLE_PUBLIC_KEY=your_public_key
-PADDLE_WEBHOOK_SECRET=your_webhook_secret
-NEXTAUTH_URL=https://your-app.pages.dev
-NEXTAUTH_SECRET=your_secret
-JWT_SECRET=your_jwt_secret
+# Application Configuration
+JWT_SECRET=your_jwt_secret_key
+
+# Admin Configuration
 ADMIN_EMAIL=admin@yourdomain.com
+
+# Environment
+NODE_ENV=development
 ```
 
-Set variables for both **Production** and **Preview** environments.
+## Getting Started
 
-#### 4. Configure Compatibility Settings
-1. Go to **Settings** > **Functions**
-2. Ensure **nodejs_compat** is enabled (configured in `wrangler.toml`)
-3. Compatibility date should be `2025-03-25` or later
+### Prerequisites
+- Node.js 20.x or higher
+- npm or pnpm
+- Supabase account
+- Paddle account
 
-#### 5. Deploy
-Click **Save and Deploy**. Your app will be live at `https://your-app.pages.dev`
+### Installation
 
-### Local Development with Cloudflare Workers
-
-Test your app with Cloudflare Workers locally:
+1. Install dependencies:
 ```bash
-npm run preview:worker
+npm install
 ```
 
-This builds and runs your app on `http://localhost:8771` using Wrangler.
+2. Set up environment variables:
+```bash
+cp .env.example .env.local
+# Edit .env.local with your credentials
+```
 
-### Deployment via CLI
+3. Run the development server:
+```bash
+npm run dev
+```
 
-Deploy directly using Wrangler:
+The server will start at `http://localhost:3000` (or next available port).
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run preview:worker` - Preview with Cloudflare Pages locally
+- `npm run deploy` - Build and deploy to Cloudflare Pages
+- `npm run check` - Check SvelteKit project
+- `npm run lint` - Lint code with ESLint
+
+### Database Schema
+
+The application uses the following Supabase tables:
+- `profiles` - User profiles with license keys
+- `subscriptions` - Paddle subscription data
+- `payment_attempts` - Payment history
+- `webhook_events` - Webhook event log
+- `admin_actions` - Admin action audit log
+- `onboarding_progress` - User onboarding tracking
+- `feature_usage` - Feature usage analytics
+- `paywall_interactions` - Paywall interaction tracking
+
+## Deployment
+
+### Cloudflare Pages
+
+1. Build the project:
+```bash
+npm run build
+```
+
+2. Deploy to Cloudflare Pages:
 ```bash
 npm run deploy
 ```
 
-Or specifically for Pages:
+Or use the Cloudflare Pages dashboard:
+- Build command: `npm run build`
+- Build output directory: `.svelte-kit/cloudflare`
+
+### Environment Variables in Production
+
+Add all environment variables in the Cloudflare Pages dashboard under:
+Settings → Environment Variables
+
+Make sure to add:
+- `PUBLIC_SUPABASE_URL`
+- `PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `PADDLE_VENDOR_ID`
+- `PADDLE_VENDOR_AUTH_CODE`
+- `PADDLE_PUBLIC_KEY`
+- `PADDLE_WEBHOOK_SECRET`
+- `JWT_SECRET`
+- `ADMIN_EMAIL`
+- `NODE_ENV=production`
+
+### Webhook Configuration
+
+Configure Paddle webhooks to point to:
+```
+https://your-domain.pages.dev/api/webhooks/paddle
+```
+
+## Testing
+
+### Test License Verification
+
 ```bash
-npm run pages:deploy
+curl -X POST http://localhost:3000/api/license/verify \
+  -H "Content-Type: application/json" \
+  -d '{"licenseKey": "XXXX-XXXX-XXXX-XXXX"}'
 ```
 
-### Important Cloudflare Configuration
+### Test Authentication
 
-This app uses:
-- **@opennextjs/cloudflare** for Next.js compatibility
-- **nodejs_compat** flag for Node.js runtime
-- **Standalone output mode** for optimal performance
-- **Compatibility date**: 2025-03-25 or later
+```bash
+# Register
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123", "name": "Test User"}'
 
-See `wrangler.toml` for full configuration.
-
-## Security Considerations
-
-- ✅ All API endpoints have authentication
-- ✅ Row Level Security enabled on database
-- ✅ Webhook signature verification
-- ✅ Input validation on all forms
-- ✅ Admin role verification for admin endpoints
-- ✅ Secure license key generation
-
-## Chrome Extension Integration
-
-### Using the License System
-```javascript
-// In your Chrome extension
-const licenseKey = 'XXXX-XXXX-XXXX-XXXX'; // From user dashboard
-
-// Validate license with your backend
-const response = await fetch('https://yourdomain.com/api/validate-license', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ licenseKey })
-});
-
-const { valid, subscription } = await response.json();
+# Login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com", "password": "password123"}'
 ```
 
-## Support & Customization
+## Support
 
-This backend is designed to be easily customizable for your specific Chrome extension needs. Key areas for customization:
-
-1. **Plan Configuration**: Update `PADDLE_PLANS` in `lib/paddle.js`
-2. **UI Branding**: Modify colors and styling in `tailwind.config.js`
-3. **License Validation**: Extend the license system in `utils/licenseGenerator.js`
-4. **Admin Features**: Add custom admin functionality in `app/admin/`
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+For issues or questions, please contact the development team.
 
 ## License
 
-MIT License - see LICENSE file for details.
-
----
-
-## Getting Help
-
-- Check the GitHub issues for common problems
-- Review the Supabase and Paddle documentation
-- Ensure all environment variables are correctly set
-- Verify webhook endpoints are accessible
-
-For additional support, please create an issue in the repository.
+MIT
