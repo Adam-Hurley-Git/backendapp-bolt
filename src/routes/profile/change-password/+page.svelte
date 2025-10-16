@@ -142,7 +142,7 @@
       <!-- Header -->
       <div class="mb-8">
         <div class="flex items-center gap-4 mb-4">
-          <a href="/profile" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <a href="/profile" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Back to profile">
             <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M15 19l-7-7 7-7" />
             </svg>

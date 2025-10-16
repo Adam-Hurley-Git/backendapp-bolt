@@ -49,7 +49,7 @@
           </div>
 
           <!-- Mobile menu button -->
-          <button class="md:hidden p-2 rounded-lg hover:bg-slate-100">
+          <button class="md:hidden p-2 rounded-lg hover:bg-slate-100" aria-label="Toggle menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
