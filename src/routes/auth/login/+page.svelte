@@ -173,7 +173,7 @@
           <div class="mt-6">
             <div class="relative">
               <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-slate-200" />
+                <div class="w-full border-t border-slate-200"></div>
               </div>
               <div class="relative flex justify-center text-sm">
                 <span class="px-4 bg-white text-slate-500 font-medium">Or continue with</span>
@@ -218,8 +218,8 @@
             </p>
             <p class="mt-2 text-xs text-slate-500">
               By continuing, you agree to our{' '}
-              <a href="#" class="text-slate-600 hover:text-slate-900 underline underline-offset-2">Terms</a> and{' '}
-              <a href="#" class="text-slate-600 hover:text-slate-900 underline underline-offset-2">Privacy Policy</a>
+              <a href="/terms" class="text-slate-600 hover:text-slate-900 underline underline-offset-2">Terms</a> and{' '}
+              <a href="/privacy" class="text-slate-600 hover:text-slate-900 underline underline-offset-2">Privacy Policy</a>
             </p>
           </div>
         </div>

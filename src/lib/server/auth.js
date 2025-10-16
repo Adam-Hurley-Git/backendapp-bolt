@@ -1,4 +1,4 @@
-import { ADMIN_EMAIL } from '$env/static/private';
+import { env as privateEnv } from '$env/dynamic/private';
 
 /**
  * Check if the current user is an admin
@@ -8,7 +8,12 @@ export async function isAdmin(session) {
 		return false;
 	}
 
-	return session.user.email === ADMIN_EMAIL;
+    // Prefer Cloudflare runtime env when available, fallback to dynamic private env
+    const adminEmail =
+        (globalThis?.__cloudflare_env__ && globalThis.__cloudflare_env__.ADMIN_EMAIL) ||
+        privateEnv.ADMIN_EMAIL;
+
+    return session.user.email === adminEmail;
 }
 
 /**

@@ -164,7 +164,7 @@
       <!-- Header -->
       <div class="mb-8">
         <div class="flex items-center gap-4 mb-4">
-          <a href="/dashboard" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+          <a href="/dashboard" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Back to dashboard">
             <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -265,7 +265,7 @@
                       rows={3}
                       class="input resize-none"
                       placeholder="Tell us about yourself"
-                    />
+                    ></textarea>
                   </div>
 
                   <div class="grid sm:grid-cols-2 gap-4">
@@ -367,14 +367,14 @@
               <div class="card-body">
                 <div class="space-y-4">
                   <div>
-                    <label class="text-sm font-medium text-slate-600">Account ID</label>
+                    <p class="text-sm font-medium text-slate-600">Account ID</p>
                     <p class="text-xs font-mono text-slate-900 bg-slate-100 px-2 py-1 rounded mt-1">
                       {user?.id || 'Loading...'}
                     </p>
                   </div>
 
                   <div>
-                    <label class="text-sm font-medium text-slate-600">Member Since</label>
+                    <p class="text-sm font-medium text-slate-600">Member Since</p>
                     <p class="text-sm text-slate-900 mt-1">
                       {#if profile?.user_created_at}
                         {new Date(profile.user_created_at).toLocaleDateString('en-US', {
@@ -389,7 +389,7 @@
                   </div>
 
                   <div>
-                    <label class="text-sm font-medium text-slate-600">Last Updated</label>
+                    <p class="text-sm font-medium text-slate-600">Last Updated</p>
                     <p class="text-sm text-slate-900 mt-1">
                       {#if profile?.updated_at}
                         {new Date(profile.updated_at).toLocaleDateString('en-US', {

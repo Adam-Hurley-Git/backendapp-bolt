@@ -319,28 +319,28 @@
             <ul class="space-y-2 text-sm">
               <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
               <li><a href="/pricing" class="hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Roadmap</a></li>
+              <li><a href="/changelog" class="hover:text-white transition-colors">Changelog</a></li>
+              <li><a href="/roadmap" class="hover:text-white transition-colors">Roadmap</a></li>
             </ul>
           </div>
 
           <div>
             <h3 class="text-white font-semibold mb-4">Support</h3>
             <ul class="space-y-2 text-sm">
-              <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Contact Support</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Status Page</a></li>
+              <li><a href="/docs" class="hover:text-white transition-colors">Documentation</a></li>
+              <li><a href="/help" class="hover:text-white transition-colors">Help Center</a></li>
+              <li><a href="/contact" class="hover:text-white transition-colors">Contact Support</a></li>
+              <li><a href="/status" class="hover:text-white transition-colors">Status Page</a></li>
             </ul>
           </div>
 
           <div>
             <h3 class="text-white font-semibold mb-4">Legal</h3>
             <ul class="space-y-2 text-sm">
-              <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Cookie Policy</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">GDPR</a></li>
+              <li><a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" class="hover:text-white transition-colors">Terms of Service</a></li>
+              <li><a href="/cookies" class="hover:text-white transition-colors">Cookie Policy</a></li>
+              <li><a href="/gdpr" class="hover:text-white transition-colors">GDPR</a></li>
             </ul>
           </div>
         </div>
@@ -348,14 +348,14 @@
         <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p class="text-sm">&copy; 2024 CalendarExtension - ColorKit. All rights reserved.</p>
           <div class="flex items-center gap-4 mt-4 md:mt-0">
-            <a href="#" class="hover:text-white transition-colors">
+            <a href="https://twitter.com" class="hover:text-white transition-colors" aria-label="Twitter">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
               </svg>
             </a>
-            <a href="#" class="hover:text-white transition-colors">
+            <a href="https://linkedin.com" class="hover:text-white transition-colors" aria-label="LinkedIn">
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                 <circle cx="4" cy="4" r="2"/>
               </svg>
             </a>

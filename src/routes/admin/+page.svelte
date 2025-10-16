@@ -663,7 +663,7 @@
           <div class="flex flex-col md:flex-row gap-4">
             <!-- Data Source Toggle -->
             <div class="flex items-center gap-2">
-              <label class="text-sm font-medium text-gray-700">Data Source:</label>
+              <label class="text-sm font-medium text-gray-700" for="data-source">Data Source:</label>
               <div class="flex gap-2">
                 <button
                   on:click={() => handleDataSourceChange('master')}
