@@ -1,0 +1,17 @@
+# Local development environment variables
+# Copy this file to .dev.vars for local development
+
+# Public variables (accessible in browser)
+PUBLIC_SUPABASE_URL=your_supabase_project_url
+PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+PUBLIC_PADDLE_VENDOR_ID=your_paddle_vendor_id
+PUBLIC_PADDLE_ENVIRONMENT=sandbox
+
+# Private variables (server-side only)
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+PADDLE_VENDOR_ID=your_paddle_vendor_id
+PADDLE_VENDOR_AUTH_CODE=your_paddle_vendor_auth_code
+PADDLE_PUBLIC_KEY=your_paddle_public_key
+PADDLE_WEBHOOK_SECRET=your_paddle_webhook_secret
+JWT_SECRET=your_jwt_secret_key_here
+ADMIN_EMAIL=admin@yourdomain.com
