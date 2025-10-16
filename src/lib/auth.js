@@ -2,22 +2,21 @@ import { supabase } from './supabase'
 import { browser } from '$app/environment'
 
 export const auth = {
-  // Get the shared client
   getClient() {
-    return supabase
+    return supabase;
   },
 
-  // Sign up with email
   async signUp(email, password, userData = {}) {
+    if (!supabase) throw new Error('Database not available');
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: userData
       }
-    })
+    });
 
-    if (error) throw error
+    if (error) throw error;
 
     // Create profile record if signup was successful and user was created
     if (data.user && !error) {
@@ -43,20 +42,19 @@ export const auth = {
     return data
   },
 
-  // Sign in with email
   async signIn(email, password) {
+    if (!supabase) throw new Error('Database not available');
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
-    })
+    });
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
 
-  // Sign in with Google
   async signInWithGoogle(redirectTo = null) {
-    if (!browser) return
+    if (!browser || !supabase) return;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -69,29 +67,38 @@ export const auth = {
     return data
   },
 
-  // Sign out
   async signOut() {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    if (!supabase) return;
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   },
 
-  // Get current user
   async getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) throw error
-    return user
+    if (!supabase) return null;
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return user;
+    } catch (error) {
+      console.warn('Get user failed:', error);
+      return null;
+    }
   },
 
-  // Get current session
   async getCurrentSession() {
-    const { data: { session }, error } = await supabase.auth.getSession()
-    if (error) throw error
-    return session
+    if (!supabase) return null;
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return session;
+    } catch (error) {
+      console.warn('Get session failed:', error);
+      return null;
+    }
   },
 
-  // Reset password
   async resetPassword(email) {
-    if (!browser) return
+    if (!browser || !supabase) return;
 
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/reset-password`
@@ -101,26 +108,26 @@ export const auth = {
     return data
   },
 
-  // Update password
   async updatePassword(newPassword) {
+    if (!supabase) throw new Error('Database not available');
     const { data, error } = await supabase.auth.updateUser({
       password: newPassword
-    })
+    });
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
 
-  // Update user metadata
   async updateUser(updates) {
-    const { data, error } = await supabase.auth.updateUser(updates)
+    if (!supabase) throw new Error('Database not available');
+    const { data, error } = await supabase.auth.updateUser(updates);
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
 
-  // Listen to auth changes
   onAuthStateChange(callback) {
-    return supabase.auth.onAuthStateChange(callback)
+    if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } };
+    return supabase.auth.onAuthStateChange(callback);
   }
-}
+};
